@@ -5,11 +5,22 @@
 You are navigating WDL (Widdle Definition Language) operation documentation.
 Each `.md` file describes one operation for workflow definitions.
 
+### Base URL
+
+```
+https://adoptai.github.io/widdle_docs/operations/
+```
+
 ### Loading Strategy
 
 1. **Analyze user request** - Identify needed capabilities
 2. **Scan index below** - Find relevant operations
-3. **Load selectively** - Only load specific `.md` files you need
+3. **Fetch documentation** - Append the filename from the table to the base URL
+
+**Example:** To load the REST operation documentation:
+```
+https://adoptai.github.io/widdle_docs/operations/REST_OPERATION_DESCRIPTION.md
+```
 
 ---
 
