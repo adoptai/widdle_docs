@@ -22,9 +22,33 @@ Key Features:
 
 Parameters:
 - input: ID of a previous workflow step that contains the data to be formatted (required)
-- context_map: Dictionary mapping context variable keys to their descriptions. These variables are extracted from previous workflow steps and provided to the LLM for context (optional)
+- context_map: Dictionary mapping step IDs to description strings (optional, see format below)
 - instructions: Natural language instructions for the LLM on how to format the output (required)
 - table_rows_limit: Maximum number of rows to display in the output table for multi-row arrays (optional, default: 20)
+
+## context_map Format
+
+⚠️ IMPORTANT: context_map must use simple string values, NOT nested objects.
+
+✅ CORRECT format:
+```json
+"context_map": {
+  "getUserStats": "User statistics including total actions and success rate",
+  "getOrderHistory": "Recent order history for the customer"
+}
+```
+
+❌ WRONG format (nested objects will cause errors):
+```json
+"context_map": {
+  "getUserStats": {
+    "description": "User statistics",
+    "render_as": "table"
+  }
+}
+```
+
+The context_map keys must be valid step IDs from previous workflow operations. The string values describe what that step's output contains, helping the LLM understand the context.
 
 Examples:
 
