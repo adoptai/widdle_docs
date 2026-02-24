@@ -7,7 +7,8 @@ Basic Structure:
   "suggestions": "string" (must always be present, use empty string if no suggestions to provide),
   "actions": list[string] (must always be present, use empty list if no actions to suggest),
   "prompts": list[string] (must always be present, use empty list if no prompts to suggest),
-  "limit": integer (must always be present, default -1)
+  "limit": integer (must always be present, default -1),
+  "comment": string (optional)
 }
 - The id is always "suggestions".
 - The operation is always "SUGGESTIONS".

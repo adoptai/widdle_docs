@@ -15,7 +15,8 @@ Basic Structure:
   "payload_placeholders": object (optional),
   "metadata": object (optional),
   "query_params": object (optional, default: {}),
-  "context": object (optional, default: {})
+  "context": object (optional, default: {}),
+  "type_hint": object (optional, default: {})
 }
 
 Key Features:

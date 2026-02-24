@@ -14,7 +14,8 @@ Basic Structure:
     }
   ],
   "then": string,
-  "else": string
+  "else": string,
+  "type_hint": object (optional, default: {})
 }
 
 Key Features:

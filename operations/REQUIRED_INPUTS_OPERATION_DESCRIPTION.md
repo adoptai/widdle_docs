@@ -4,17 +4,20 @@ Basic Structure:
 {
   "id": string,
   "operation": "REQUIRED_INPUTS",
-  "required_inputs": list[string]
+  "required_inputs": list[string],
+  "inputs": list[object] (optional)
 }
 
 Description:
 - Specifies which input fields must be collected from the user before workflow execution
 - Generates a form with the specified fields for user input
 - Collected values are available in subsequent steps via workflow_parameters
+- Supports two formats: simple (required_inputs) and structured (inputs)
 
 Key Features:
 - Triggers a form generation to collect user inputs
 - Each string in required_inputs becomes a form field
+- The structured "inputs" format allows specifying field metadata (label, type, options, etc.)
 - Values are accessible in subsequent steps as workflow_parameters.<field_name>
 - This is a metadata operation that defines data requirements
 - Typically placed at the beginning of a workflow
@@ -24,6 +27,7 @@ Parameters:
 - id: Unique identifier for this step (commonly "required_inputs")
 - operation: Must be "REQUIRED_INPUTS"
 - required_inputs: Array of field names to collect from the user
+- inputs: Array of structured input definitions with field metadata (optional, alternative to required_inputs)
 
 Examples:
 

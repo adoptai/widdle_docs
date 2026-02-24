@@ -9,7 +9,8 @@ Basic Structure:
   "footer_message": string (optional),
   "formatting_rules": object (optional, default: {}),
   "raw": boolean (optional, default: false),
-  "prompt": boolean (optional, default: false)
+  "prompt": boolean (optional, default: false),
+  "structured_context_key": string (optional)
 }
 Key Features:
 

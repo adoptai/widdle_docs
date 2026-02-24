@@ -5,15 +5,14 @@ Basic Structure:
 {
   "id": string,
   "operation": "OUTPUT_TABLE",
-  "field_path": string (optional),
   "footer_message": string (optional),
   "formatting_rules": object (optional),
   "header_message": string (optional),
   "headers": object,
   "input": string,
   "limit": number (optional, default: 50),
-  "meta": array (optional),
-  "ordered_display_fields": array (optional)
+  "ordered_display_fields": array (optional),
+  "structured_context_key": string (optional)
 }
 Key Features:
 

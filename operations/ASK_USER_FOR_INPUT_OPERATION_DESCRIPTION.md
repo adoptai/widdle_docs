@@ -6,7 +6,9 @@ Basic Structure:
   "operation": "ASK_USER_FOR_INPUT",
   "prompt": "string (optional)",
   "fields": "string[] (optional)",
-  "action_statement": "string (optional)"
+  "action_statement": "string (optional)",
+  "placeholders": "string[] (optional)",
+  "input_list": "string (optional)"
 }
 
 Key Features:

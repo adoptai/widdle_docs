@@ -8,7 +8,9 @@ Basic Structure:
   "multi_dict": array,
   "place_holder": object (optional, default: {}),
   "delay": number (optional, default: 0),
-  ... (inherits REST operation parameters for the API call template)
+  "url": string,
+  "method": string,
+  "payload": object (optional)
 }
 
 Description:

@@ -4,6 +4,7 @@ Basic Structure:
 {
   "id": string,
   "operation": "END",
+  "input": string (optional),
   "key_field": string (optional),
   "value_field": string (optional)
 }

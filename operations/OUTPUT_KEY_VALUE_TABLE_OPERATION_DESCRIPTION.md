@@ -8,7 +8,8 @@ Basic Structure:
   "footer_message": string (optional),
   "formatting_rules": object (optional, default: {}),
   "header_message": string (optional),
-  "input": string
+  "input": string,
+  "structured_context_key": string (optional)
 }
 
 Key Features:

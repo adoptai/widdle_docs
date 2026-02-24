@@ -6,9 +6,11 @@ Basic Structure:
   "operation": "PROMPT_AND_TOOLS_AGENT",
   "simple_prompt_id": string (preferred, fetches prompt from prompt vault),
   "system_prompt": string (deprecated, use simple_prompt_id instead),
-  "model_string": string (optional, default: "claude-4-5-sonnet"),
+  "model_string": string (optional, default: "claude-4-0-sonnet"),
   "action_ids": list[string],
-  "output_format": string (optional, one of: "message_only", "full_response", default: "message_only")
+  "output_format": string (optional, one of: "message_only", "full_response", default: "message_only"),
+  "execution_timeout": number (optional, default: None),
+  "max_iterations": number (optional, default: 15)
 }
 
 Key Features:

@@ -17,7 +17,9 @@ Basic Structure:
   "response_format": string (optional),
   "timeout": number (optional, default: 60),
   "verify": boolean | string (optional, default: true),
-  "url": string
+  "url": string,
+  "type_hint": object (optional, default: {}),
+  "canonical_api_endpoint": string (optional)
 }
 
 Description:
