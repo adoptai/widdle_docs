@@ -9,6 +9,7 @@ Basic Structure:
   "model_string": string (optional, default: "claude-4-0-sonnet"),
   "action_ids": list[string],
   "output_format": string (optional, one of: "message_only", "full_response", default: "message_only"),
+  "inputs": list[string] (optional, keys from intermediate_results or workflow_arguments to include as additional context),
   "execution_timeout": number (optional, default: None),
   "max_iterations": number (optional, default: 15)
 }
@@ -16,7 +17,7 @@ Basic Structure:
 Key Features:
 - Creates a LangChain-based agent with custom system prompt
 - Provides the agent with specific ProjectA3 actions as callable tools
-- Agent uses the user's query automatically from conversation context
+- Agent uses the user's query automatically from conversation context. When `inputs` is provided, resolved data from intermediate_results is appended as additional context to the query
 - Supports multiple LLM models (GPT, Claude, Gemini, Groq)
 - Automatically detects and uses LLM gateway when configured
 - Agent can reason about which tools to use and when
@@ -29,6 +30,7 @@ Parameters:
 - model_string: LLM model identifier (e.g., "gpt-5", "claude-4-5-sonnet", "gemini-pro", "groq/llama3-8b")
 - action_ids: List of ProjectA3 action IDs that the agent can use as tools
 - output_format: How to format the response - "message_only" returns just the message, "full_response" returns message and finish status
+- inputs: Optional list of keys from intermediate_results or workflow_arguments to resolve and append as additional context to the agent's query. Each key is resolved via jq from the workflow's intermediate results. When omitted, the agent uses only the user query from conversation context
 
 Model Options:
 - GPT models: "gpt-5", "gpt-4", "gpt-4-turbo"
@@ -68,10 +70,31 @@ Examples:
   "output_format": "message_only"
 }
 
+4. Webhook-Triggered Agent (With Inputs from workflow_arguments):
+{
+  "id": "webhookAgent",
+  "operation": "PROMPT_AND_TOOLS_AGENT",
+  "system_prompt": "You are triggered by a webhook. Your query includes an Additional context section containing workflow_arguments with an external_reference_id. Use it as the leadID when calling the enrichment tool.",
+  "model_string": "claude-4-5-sonnet",
+  "action_ids": ["enrich_lead"],
+  "inputs": ["workflow_arguments"],
+  "output_format": "message_only"
+}
+
+5. Agent With Multiple Inputs (Previous steps + workflow_arguments):
+{
+  "id": "multiInputAgent",
+  "operation": "PROMPT_AND_TOOLS_AGENT",
+  "simple_prompt_id": "11111",
+  "model_string": "claude-4-5-sonnet",
+  "action_ids": ["action_a", "action_b"],
+  "inputs": ["workflow_arguments", "previousStepResult"]
+}
+
 Implementation Notes:
 - PREFERRED: Use simple_prompt_id to reference prompts stored in the prompt vault for better prompt management and versioning
 - LEGACY: system_prompt is still supported for backwards compatibility but should be migrated to simple_prompt_id
-- The agent automatically uses the user query from the conversation context
+- The agent automatically uses the user query from the conversation context. When `inputs` is specified, the resolved data is appended as "Additional context" to the query
 - Security params, base URLs, and config instance are automatically provided from the workflow context
 - The agent can make multiple tool calls in sequence to complete complex tasks
 - Tool execution results are automatically formatted and presented to the agent
