@@ -12,6 +12,8 @@ Basic Structure:
   "status_field": string (optional, default "data[0].status"),
   "running_status": string (optional, default "running"),
   "max_retries": integer (optional, default 20, max 20),
+  "retry_with_payload_step": string (optional),
+  "max_payload_retries": integer (optional, default: 3),
   ... (inherits all REST operation parameters)
 }
 
@@ -126,3 +128,4 @@ Implementation Notes:
 - Consider API rate limits when choosing poll_interval
 - The operation blocks the workflow until the status changes or max_retries is exceeded
 - At default settings (10s initial + 20 x 5s polls), the maximum blocking time is ~110 seconds (~1.8 minutes)
+- Supports `retry_with_payload_step` and `max_payload_retries` for LLM-based payload retry on API failure, same as the REST operation. On failure, the executor re-invokes the linked generation step (PAYLOAD, TEXT_TO_SQL, or TXT_TO_SOQL_QUERY) with error context, then retries the REST_DELAY call.

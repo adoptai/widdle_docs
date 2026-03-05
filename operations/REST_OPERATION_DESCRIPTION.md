@@ -19,7 +19,9 @@ Basic Structure:
   "verify": boolean | string (optional, default: true),
   "url": string,
   "type_hint": object (optional, default: {}),
-  "canonical_api_endpoint": string (optional)
+  "canonical_api_endpoint": string (optional),
+  "retry_with_payload_step": string (optional),
+  "max_payload_retries": integer (optional, default: 3)
 }
 
 Description:
@@ -36,6 +38,8 @@ Description:
 - `verify` parameter controls SSL certificate verification. Defaults to `true` (verify certificates).
   Set to `false` to disable SSL verification, or provide a string path to a CA bundle file for
   custom certificate verification
+- `retry_with_payload_step` links this REST step to a previous payload generation step (PAYLOAD, TEXT_TO_SQL, or TXT_TO_SOQL_QUERY). On API failure, the executor re-invokes that generation step with error context so the LLM can self-correct, then retries the REST call with the regenerated payload.
+- `max_payload_retries` sets the maximum number of payload-regeneration-and-retry cycles (default: 3). Only used when `retry_with_payload_step` is set.
 
 Examples:
 1. Simple GET request:
@@ -104,4 +108,39 @@ concatenated into an array.
   "url": "https://internal-api.example.com/v1/data",
   "method": "GET",
   "verify": "/path/to/ca-bundle.crt"
+}
+
+7. REST call with LLM payload retry (paired with a PAYLOAD step):
+{
+  "id": "gen_payload",
+  "operation": "PAYLOAD",
+  "instructions": "Build a user creation payload from the input.",
+  "json_schema": { "type": "object", "properties": { "email": { "type": "string" } }, "required": ["email"] },
+  "input": "getUserInput"
+}
+{
+  "id": "createUser",
+  "operation": "REST",
+  "url": "https://api.example.com/v1/users",
+  "method": "POST",
+  "payload": "{gen_payload}",
+  "retry_with_payload_step": "gen_payload",
+  "max_payload_retries": 3
+}
+
+8. REST call with SOQL retry (paired with a TXT_TO_SOQL_QUERY step):
+{
+  "id": "gen_soql",
+  "operation": "TXT_TO_SOQL_QUERY",
+  "object_schema": "Object: Opportunity\n| Field API Name | Field Label | Data Type |\n| Id | Opportunity ID | Lookup() |\n| Name | Name | Text(120) |"
+}
+{
+  "id": "querySalesforce",
+  "operation": "REST",
+  "url": "https://instance.salesforce.com/services/data/v59.0/query",
+  "method": "GET",
+  "query_params": { "q": "{gen_soql.query}" },
+  "additional_headers": { "Authorization": "Bearer {auth.access_token}" },
+  "retry_with_payload_step": "gen_soql",
+  "max_payload_retries": 3
 }

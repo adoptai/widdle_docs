@@ -10,7 +10,9 @@ Basic Structure:
   "delay": number (optional, default: 0),
   "url": string,
   "method": string,
-  "payload": object (optional)
+  "payload": object (optional),
+  "retry_with_payload_step": string (optional),
+  "max_payload_retries": integer (optional, default: 3)
 }
 
 Description:
@@ -125,3 +127,4 @@ Implementation Notes:
 - Validation errors (non-list multi_dict, non-positive total) return appropriate error messages
 - The operation aggregates results from all REST calls made during iteration
 - Consider memory usage when processing large lists as all results are collected
+- Supports `retry_with_payload_step` and `max_payload_retries` for LLM-based payload retry on API failure, same as the REST operation. On failure, the executor re-invokes the linked generation step (PAYLOAD, TEXT_TO_SQL, or TXT_TO_SOQL_QUERY) with error context, then retries the REST_LOOP call.

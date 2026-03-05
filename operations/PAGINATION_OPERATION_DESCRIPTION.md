@@ -16,7 +16,9 @@ Basic Structure:
   "metadata": object (optional),
   "query_params": object (optional, default: {}),
   "context": object (optional, default: {}),
-  "type_hint": object (optional, default: {})
+  "type_hint": object (optional, default: {}),
+  "retry_with_payload_step": string (optional),
+  "max_payload_retries": integer (optional, default: 3)
 }
 
 Key Features:
@@ -104,3 +106,4 @@ Implementation Notes:
 - For other intents, pagination context is fetched at the start and updated at the end
 - payload_placeholders enables dynamic parameter updates between page requests
 - metadata JSON object is used to store directional information for pagination.
+- Supports `retry_with_payload_step` and `max_payload_retries` for LLM-based payload retry on API failure, same as the REST operation. On failure, the executor re-invokes the linked generation step (PAYLOAD, TEXT_TO_SQL, or TXT_TO_SOQL_QUERY) with error context, then retries the PAGINATION call.
