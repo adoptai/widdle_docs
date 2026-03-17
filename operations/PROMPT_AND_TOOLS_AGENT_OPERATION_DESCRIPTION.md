@@ -11,7 +11,9 @@ Basic Structure:
   "output_format": string (optional, one of: "message_only", "full_response", default: "message_only"),
   "inputs": list[string] (optional, keys from intermediate_results or workflow_arguments to include as additional context),
   "execution_timeout": number (optional, default: None),
-  "max_iterations": number (optional, default: 15)
+  "max_iterations": number (optional, default: 15),
+  "summarize_tool_context": boolean (optional, default: false),
+  "skip_from_research": boolean (optional, default: false)
 }
 
 Key Features:
@@ -31,6 +33,8 @@ Parameters:
 - action_ids: List of ProjectA3 action IDs that the agent can use as tools
 - output_format: How to format the response - "message_only" returns just the message, "full_response" returns message and finish status
 - inputs: Optional list of keys from intermediate_results or workflow_arguments to resolve and append as additional context to the agent's query. Each key is resolved via jq from the workflow's intermediate results. When omitted, the agent uses only the user query from conversation context
+- summarize_tool_context: When true, conversation history from previous turns is summarized via a fast LLM (Haiku) at the start of each new turn instead of loading raw tool messages into context. Raw data is always preserved in the DB. Useful for multi-turn agents that hit context/timeout limits after 3-4 turns
+- skip_from_research: When true, prevents this agent's sub-action REST results from being forwarded into the parent workflow's deep research payload. Useful when an agent step gathers auxiliary data that should not be included in the final deep research analysis. Only relevant when the workflow runs in reasoning mode; has no effect otherwise. Defaults to false
 
 Model Options:
 - GPT models: "gpt-5", "gpt-4", "gpt-4-turbo"
@@ -89,6 +93,17 @@ Examples:
   "model_string": "claude-4-5-sonnet",
   "action_ids": ["action_a", "action_b"],
   "inputs": ["workflow_arguments", "previousStepResult"]
+}
+
+6. Multi-Turn Agent With Context Summarization:
+{
+  "id": "uberAgent",
+  "operation": "PROMPT_AND_TOOLS_AGENT",
+  "simple_prompt_id": "99999",
+  "model_string": "claude-4-5-sonnet",
+  "action_ids": ["setup_environment", "process_data", "generate_output", "cleanup_session"],
+  "summarize_tool_context": true,
+  "output_format": "message_only"
 }
 
 Implementation Notes:
