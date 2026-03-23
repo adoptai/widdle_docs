@@ -12,7 +12,8 @@ Basic Structure:
   "is_last_step": boolean (optional, default: true),
   "kwargs": object (optional, default: {}),
   "model_name": string (optional),
-  "output_format": string (optional)
+  "output_format": string (optional),
+  "fields": array of strings or schema dicts (optional)
 }
 
 Key Features:
@@ -53,6 +54,25 @@ Examples:
   "is_last_step": false
 }
 
+5. Structured Field Extraction — plain strings (intermediate step):
+{
+  "id": "extractDateRange",
+  "operation": "PROMPT",
+  "instructions": "Extract the date range mentioned by the user in the conversation.",
+  "is_last_step": false,
+  "fields": ["start_date", "end_date"]
+}
+
+6. Structured Field Extraction — dict with schema (enforces exact key names in nested output):
+{
+  "id": "extractFreightRates",
+  "operation": "PROMPT",
+  "input": "prepareEmailForPrompt",
+  "instructions": "Extract all freight rate quotes from the email content. Return [] if no rate information is present.",
+  "is_last_step": false,
+  "fields": [{"extracted_rates": {"Carrier Name": "string or null", "Place of Loading": "string or null", "Place of Delivery": "string or null", "Base Rate": "float or null", "Currency": "string or null"}}]
+}
+
 4. Using kwargs for Model Parameters:
 {
   "id": "creativeAnalysis",
@@ -75,3 +95,5 @@ Implementation Notes:
 - When 'is_last_step' is true and output is string/list, the result is formatted for display
 - Timezone context is automatically passed to the LLM for date/time processing
 - Errors in language model processing will be returned as error messages
+- The 'fields' parameter enables structured key extraction: when provided and 'is_last_step' is false, the LLM extracts only the specified fields and returns a plain dictionary (e.g., {"start_date": "2025-01-01"}), suitable for use as input in subsequent steps
+- Each entry in 'fields' can be either a plain string (e.g. "summary") or a dict whose key is the field name and value is a schema object defining exact key names and types for nested output (e.g. {"extracted_rates": {"Carrier Name": "string or null", "Base Rate": "float or null"}}). The dict form enforces that the LLM uses the exact key names in the schema rather than inventing its own based on source data terminology
