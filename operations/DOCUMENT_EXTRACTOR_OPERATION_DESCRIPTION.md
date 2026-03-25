@@ -1,4 +1,4 @@
-Define a DOCUMENT_EXTRACTOR operation step in a JSON workflow language that extracts structured data from uploaded files (PDF, Excel, images) using an LLM gateway.
+Define a DOCUMENT_EXTRACTOR operation step in a JSON workflow language that extracts structured data from uploaded files (PDF, Excel, Word, images) using an LLM gateway.
 
 Basic Structure:
 {
@@ -15,7 +15,7 @@ Basic Structure:
 Description:
 - Downloads file(s) referenced by the 'input' key from file_uploads (provided via an ASK_USER_FOR_INPUT step with FILE_UPLOAD)
 - Routes each file through an LLM gateway for structured field extraction
-- Supports PDF (text extraction via pypdf), Excel (multi-sheet CSV conversion via openpyxl), and images (base64-encoded, sent as image_url)
+- Supports PDF (text extraction via pypdf), Excel XLSX (multi-sheet CSV conversion via openpyxl), Excel XLS (via xlrd), Word DOCX (paragraphs and tables via python-docx), and images (base64-encoded, sent as image_url)
 - Returns a single dict when one file is uploaded (backward compatible), or a list of dicts when multiple files are uploaded (batch mode)
 - Each batch result is tagged with `_source_file` (original filename) and `_file_index` (position in upload order)
 - Includes an optional filename-based pre-check to verify all required document types are present before any LLM calls
@@ -104,8 +104,9 @@ Output Shape:
 Implementation Notes:
 - Requires a valid config_instance with LLM gateway credentials (llm_gateway_api_key, llm_gateway_url)
 - The 'input' key must reference an ASK_USER_FOR_INPUT step that has a FILE_UPLOAD field
-- Supported file types: .pdf, .xlsx, .xls, .png, .jpg, .jpeg, .gif, .bmp, .tiff, .tif, .webp
-- For Excel files, ALL sheets are converted to CSV and sent as a single text block to the LLM
+- Supported file types: .pdf, .xlsx, .xls, .docx, .png, .jpg, .jpeg, .gif, .bmp, .tiff, .tif, .webp
+- For Excel files (.xlsx via openpyxl, .xls via xlrd), ALL sheets are converted to CSV and sent as a single text block to the LLM
+- For Word documents (.docx), paragraphs and tables are extracted as text
 - For images, file bytes are base64-encoded and sent as an image_url message
 - If a file in a batch fails (download error, unsupported type, LLM error), it is skipped and other files continue processing
 - If ALL files in a batch fail, the operation returns an error
