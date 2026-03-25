@@ -43,6 +43,7 @@ https://adoptai.github.io/widdle_docs/operations/REST_OPERATION_DESCRIPTION.md
 | EDIT_VALUE | `EDIT_VALUE_OPERATION_DESCRIPTION.md` | modifies JSON objects by adding, updating, or removing fields or array elements |
 | EMBEDDER | `EMBEDDER_OPERATION_DESCRIPTION.md` | reads data from a source (table or S3 documents), chunks text, generates vect... |
 | END | `END_OPERATION_DESCRIPTION.md` | terminates workflow execution and returns results collected up to that point |
+| ESCALATE | `ESCALATE_OPERATION_DESCRIPTION.md` | **Validation gate mode** (when required_fields is provided): Checks BOTH confide... |
 | EXECUTE_PLAN | `EXECUTE_PLAN_OPERATION_DESCRIPTION.md` | executes a multi-step plan by delegating to a set of predefined actions |
 | EXTRACT | `EXTRACT_OPERATION_DESCRIPTION.md` | extracts a single field from a JSON object |
 | EXTRACT_AND_FLATTEN_UUID_MAP | `EXTRACT_AND_FLATTEN_UUID_MAP_OPERATION_DESCRIPTION.md` | transforms a UUID-keyed dictionary into a flat list of dictionaries |
@@ -66,6 +67,7 @@ https://adoptai.github.io/widdle_docs/operations/REST_OPERATION_DESCRIPTION.md
 | OUTPUT_TABLE | `OUTPUT_TABLE_DESCRIPTION.md` | formats data into a tabulated format with headers |
 | OUTPUT_TEXT | `OUTPUT_TEXT_DESCRIPTION.md` | formats data into human-readable text using a template string |
 | PAGINATION | `PAGINATION_OPERATION_DESCRIPTION.md` | handles paginated API responses by making multiple REST calls to retrieve all... |
+| PARSE_DOCUMENT | `PARSE_DOCUMENT_OPERATION_DESCRIPTION.md` | downloads and parses file(s) from S3 for use by downstream PROMPT or AGENTIC_... |
 | PAYLOAD | `PAYLOAD_OPERATION_DESCRIPTION.md` | uses a language model to generate structured JSON output conforming to a spec... |
 | PAYLOAD_GENERATION | `PAYLOAD_GENERATION_OPERATION_DESCRIPTION.md` | AI-Powered Payload Creation: Leverages an LLM to create a JSON payload from natu... |
 | POST_ACTION_URL | `POST_ACTION_URL_DESCRIPTION.md` | generates a URL where the user can view the results of their action, with opt... |
@@ -73,11 +75,11 @@ https://adoptai.github.io/widdle_docs/operations/REST_OPERATION_DESCRIPTION.md
 | PROJECT | `PROJECTION_OPERATION_DESCRIPTION.md` | performs field selection on JSON arrays |
 | PROMPT | `PROMPT_OPERATION_DESCRIPTION.md` | uses a language model to process data from a previous step based on given ins... |
 | PROMPT_AND_TOOLS_AGENT | `PROMPT_AND_TOOLS_AGENT_OPERATION_DESCRIPTION.md` | creates an intelligent agent with a custom system prompt and access to specif... |
-| READ_FROM_DB | `READ_FROM_DB_OPERATION_DESCRIPTION.md` | - TODO: Add when/why to use this operation |
+| READ_FROM_DB | `READ_FROM_DB_OPERATION_DESCRIPTION.md` | reads data from a database using a connector |
 | REASONING_METADATA | `REASONING_METADATA_OPERATION_DESCRIPTION.md` | configures reasoning behavior and step requirements for the workflow execution |
 | REQUIRED_INPUTS | `REQUIRED_INPUTS_OPERATION_DESCRIPTION.md` | specifies input fields the user must provide before the workflow can execute |
 | REST | `REST_OPERATION_DESCRIPTION.md` | Supports GET, POST, PUT, PATCH, OPTIONS, POST_FORM requests |
-| REST_DELAY | `REST_DELAY_OPERATION_DESCRIPTION.md` | executes a REST call with an initial delay and polls until a non-running stat... |
+| REST_DELAY | `REST_DELAY_OPERATION_DESCRIPTION.md` | executes a REST call with a configurable initial delay and polls until the st... |
 | REST_LOOP | `REST_LOOP_OPERATION_DESCRIPTION.md` | executes multiple REST calls by iterating over a list of items with optional ... |
 | S3_READ | `S3_READ_OPERATION_DESCRIPTION.md` | lists objects from an S3 folder, filters by file type and timestamp, batches ... |
 | SORT | `SORT_OPERATION_DESCRIPTION.md` | orders array elements based on specified fields |
@@ -85,11 +87,11 @@ https://adoptai.github.io/widdle_docs/operations/REST_OPERATION_DESCRIPTION.md
 | SUGGESTIONS | `SUGGESTIONS_OPERATION_DESCRIPTION.md` | The id is always "suggestions". |
 | TEXT_TO_SQL | `TEXT_TO_SQL_OPERATION_DESCRIPTION.md` | converts natural language queries into SQL queries using a language model |
 | TOOL_EXECUTION | `TOOL_EXECUTION_OPERATION_DESCRIPTION.md` | executes an integration tool by looking up its specification from the databas... |
-| TXT_TO_SOQL_QUERY | `TXT_TO_SOQL_QUERY_OPERATION_DESCRIPTION.md` | converts natural language user queries into valid Salesforce SOQL statements,... |
+| TXT_TO_SOQL_QUERY | `TXT_TO_SOQL_QUERY_OPERATION_DESCRIPTION.md` | converts natural language user queries into valid Salesforce SOQL statements ... |
 | UI_FORMAT_HINT | `UI_FORMAT_HINT.md` | provides hints for formatting the data of this workflow in a UI |
 | VISUALISATION | `VISUALISATION_OPERATION_DESCRIPTION.md` | uses a Large Language Model (LLM) to generate Vega v6 chart specifications fr... |
-| WRITE_TO_DB | `WRITE_TO_DB_OPERATION_DESCRIPTION.md` | - TODO: Add when/why to use this operation |
+| WRITE_TO_DB | `WRITE_TO_DB_OPERATION_DESCRIPTION.md` | writes data to a database using a connector |
 
 ---
 
-*Auto-generated on 2026-03-12 10:25:55*
+*Auto-generated on 2026-03-24 11:52:08*

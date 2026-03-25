@@ -6,6 +6,7 @@ Basic Structure:
   "id": string,
   "input": string (optional - use this OR inputs, not both),
   "inputs": string[] (optional - use this OR input, not both),
+  "inputs_required": "all" | "any" (optional, default: "all" - only applies when using "inputs". "all" errors if any input is missing; "any" allows missing inputs as null),
   "filter": string,
   "type_hint": string (optional),
   "extract_all": boolean (optional) (default: true if this field is not provided)

@@ -27,6 +27,21 @@ Key Features:
 - The 'then' field specifies the next step if the condition is true
 - The 'else' field specifies the next step if the condition is false
 
+Supported operators for clauses:
+
+Numeric / equality (native jq infix):
+  ==  !=  >  <  >=  <=
+
+String operators — default is case-insensitive. Append _CS for explicit case-sensitive matching:
+  CONTAINS / CONTAINS_CS         — field contains substring
+  NOT_CONTAINS / NOT_CONTAINS_CS — field does NOT contain substring
+  STARTS_WITH / STARTS_WITH_CS   — field begins with value
+  ENDS_WITH / ENDS_WITH_CS       — field ends with value
+  MATCHES / MATCHES_CS           — field matches regex pattern
+  NOT_MATCHES / NOT_MATCHES_CS   — field does NOT match regex pattern
+
+IMPORTANT: Only the operators listed above are valid. Do NOT invent operators (e.g. "CONTAINS_TOKEN", "CONTAINS_I", "CONTAINS_WORD"). Always prefer the base form (e.g. CONTAINS) which is case-insensitive. Only use _CS when an exact case-sensitive match is explicitly required.
+
 Examples:
 1. Conditional Step Execution:
 Input:

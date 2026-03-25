@@ -83,3 +83,4 @@ The table formatting uses the tabulate library with GitHub-style markdown
 Headers must match the structure of input data
 Each row in the input must have the same number of columns as headers
 Human readable names for the output.
+Input MUST be a list of row dicts — tabulate iterates over each element. If the upstream JQ_FILTER produces a single aggregate object (e.g. counts, totals), wrap it in an array so OUTPUT_TABLE receives a one-row list. Wrong: filter: "{total: length}" (plain dict with scalar values — causes TypeError at runtime). Correct: filter: "[{total: length}]" (one-element array that renders as a single table row).
