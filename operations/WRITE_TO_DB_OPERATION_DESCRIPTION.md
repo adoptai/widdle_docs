@@ -31,4 +31,14 @@ Field retention (source → transform → WRITE flows):
 - DB schema fields are never embedded inside the data JSON payload.
 
 Example:
-{ "input": "step_1", "connector_id": "internal_data_store", "table_label": "processed_results", "table_purpose": "Transformed and summarized results", "mode": "append" }
+```json
+{
+  "id": "write_results",
+  "operation": "WRITE_TO_DB",
+  "input": "step_1",
+  "connector_id": "internal_data_store",
+  "table_label": "processed_results",
+  "table_purpose": "Transformed and summarized results",
+  "mode": "append"
+}
+```

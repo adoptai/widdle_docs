@@ -45,6 +45,8 @@ Notes:
 - Default to `unique_body` over `mail_content` unless the user explicitly requests full thread content. `unique_body` returns only the new content added in that specific message (Microsoft Graph `uniqueBody`), stripping all quoted history — this avoids bloated payloads from reply chains. Only use `mail_content` when the user specifically asks for the full body or complete thread history.
 
 Output Format:
+CRITICAL — OUTLOOK returns a dict object (NOT an array). The emails list is inside the "emails" key. Any downstream step that needs the array of email rows (e.g. FAN_OUT, JQ_FILTER expecting a list) MUST have a JQ_FILTER step immediately after OUTLOOK with filter ".emails" and extract_all false. NEVER wire FAN_OUT "input" directly to an OUTLOOK step id — always route through that JQ_FILTER.
+
 The OUTLOOK step returns an object with the following fields:
 - `emails`: list[dict] — Fetched mail objects (each containing the selected fields).
 - `total_emails_fetched`: integer — Number of emails returned.

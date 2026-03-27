@@ -39,6 +39,7 @@ https://adoptai.github.io/widdle_docs/operations/REST_OPERATION_DESCRIPTION.md
 | CREATE_MAP | `CREATE_MAP_OPERATION_DESCRIPTION.md` | transforms an array of objects into a key-value dictionary |
 | CRYPTOGRAPHIC_OPERATION | `CRYPTOGRAPHIC_OPERATION_DESCRIPTION.md` | Supports RSA_OAEP encryption and decryption |
 | DATA_SOURCE_LOOKUP | `DATA_SOURCE_LOOKUP_OPERATION_DESCRIPTION.md` | searches organizational data sources using the assist bot |
+| DOCUMENT_EXTRACTOR | `DOCUMENT_EXTRACTOR_OPERATION_DESCRIPTION.md` | extracts structured data from uploaded files (PDF, Excel, images) using an LL... |
 | DOWNLOAD_ENABLED | `DOWNLOAD_ENABLED_OPERATION_DESCRIPTION.md` | controls whether the workflow output can be downloaded by the user |
 | EDIT_VALUE | `EDIT_VALUE_OPERATION_DESCRIPTION.md` | modifies JSON objects by adding, updating, or removing fields or array elements |
 | EMBEDDER | `EMBEDDER_OPERATION_DESCRIPTION.md` | reads data from a source (table or S3 documents), chunks text, generates vect... |
@@ -51,6 +52,7 @@ https://adoptai.github.io/widdle_docs/operations/REST_OPERATION_DESCRIPTION.md
 | EXTRACT_TRANSFORMED | `EXTRACT_TRANSFORMED_OPERATION_DESCRIPTION.md` | performs advanced data extraction and transformation using Python expressions... |
 | FAN_OUT | `FAN_OUT_OPERATION_DESCRIPTION.md` | Use when you need to process each row with its own chain of operations (e.g. JQ_... |
 | FETCH_META_FROM_CONTEXT | `FETCH_META_FROM_CONTEXT_OPERATION_DESCRIPTION.md` | retrieves previously stored metadata from the workflow context |
+| FILE_EXPORT | `FILE_EXPORT_OPERATION_DESCRIPTION.md` | writes structured JSON data from a previous step to a downloadable file (Exce... |
 | FILTER | `FILTER_OPERATION_DESCRIPTION.md` | filters array elements based on specified conditions |
 | FIRST_ELEMENT | `FIRST_ELEMENT_DESCRIPTION.md` | extracts the first element |
 | FLATTEN | `FLATTEN_OPERATION_DESCRIPTION.md` | denormalizes nested JSON arrays |
@@ -81,6 +83,7 @@ https://adoptai.github.io/widdle_docs/operations/REST_OPERATION_DESCRIPTION.md
 | REST | `REST_OPERATION_DESCRIPTION.md` | Supports GET, POST, PUT, PATCH, OPTIONS, POST_FORM requests |
 | REST_DELAY | `REST_DELAY_OPERATION_DESCRIPTION.md` | executes a REST call with a configurable initial delay and polls until the st... |
 | REST_LOOP | `REST_LOOP_OPERATION_DESCRIPTION.md` | executes multiple REST calls by iterating over a list of items with optional ... |
+| RUN_ACTION | `RUN_ACTION_OPERATION_DESCRIPTION.md` | executes a published action (ActionV2) as a sub-workflow within the pipeline |
 | S3_READ | `S3_READ_OPERATION_DESCRIPTION.md` | lists objects from an S3 folder, filters by file type and timestamp, batches ... |
 | SORT | `SORT_OPERATION_DESCRIPTION.md` | orders array elements based on specified fields |
 | STATEMENT | `STATEMENT_OPERATION_DESCRIPTION.md` | provides a human-readable description or title for the workflow action |
@@ -94,4 +97,4 @@ https://adoptai.github.io/widdle_docs/operations/REST_OPERATION_DESCRIPTION.md
 
 ---
 
-*Auto-generated on 2026-03-24 11:52:08*
+*Auto-generated on 2026-03-25 16:21:18*

@@ -27,5 +27,26 @@ Key Features:
 Example (same-pipeline):
 { "connector_id": "internal_data_store", "table_label": "processed_results", "limit": 10000 }
 
-Example (cross-pipeline):
-{ "connector_id": "internal_data_store", "table_label": "pipeline_0508af7913dd4a8d_f293c6a7c354466a", "limit": 10000 }
+1. Same-pipeline read
+Operation:
+```json
+{
+  "id": "read_results",
+  "operation": "READ_FROM_DB",
+  "connector_id": "internal_data_store",
+  "table_label": "processed_results",
+  "limit": 10000
+}
+```
+
+2. Cross-pipeline read
+Operation:
+```json
+{
+  "id": "read_cross_pipeline",
+  "operation": "READ_FROM_DB",
+  "connector_id": "internal_data_store",
+  "table_label": "pipeline_0508af7913dd4a8d_f293c6a7c354466a",
+  "limit": 10000
+}
+```

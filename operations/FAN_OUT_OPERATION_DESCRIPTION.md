@@ -34,6 +34,7 @@ Example (first sub_step "input" must be the FAN_OUT input step id so it receives
 - **READ_FROM_DB** — Produces an array of rows; use its step id as FAN_OUT `input`.
 - **JQ_FILTER** — If the step outputs an array (e.g. `extract_all: true` or filter that returns a list), use its step id as FAN_OUT `input`.
 - Any step that writes an array into `intermediate_results` can be the FAN_OUT `input`.
+- **OUTLOOK** — NEVER use an OUTLOOK step id directly as FAN_OUT `input`. OUTLOOK returns a dict (not an array); the emails list is in its `"emails"` key. Always insert a JQ_FILTER with `filter: ".emails"` after OUTLOOK and use that JQ_FILTER's id as FAN_OUT `input`.
 
 **Inside FAN_OUT (sub_steps, per row):**
 - **JQ_FILTER** — Transform or extract fields from the row; first sub_step `input` = FAN_OUT `input` step id (the row).
