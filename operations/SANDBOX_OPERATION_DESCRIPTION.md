@@ -21,6 +21,10 @@ Basic Structure:
   "upload_files": array (optional),
   "download_files": array (optional),
   "get_endpoints": array of port numbers (optional),
+  "image_auth": {
+    "username": string,
+    "password": string
+  } (optional, init only, for pulling private container images),
   "command": string (required for exec)
 }
 

@@ -14,6 +14,10 @@ Basic Structure:
     "memory": string
   } (optional, overrides lambda's registered resource limits),
   "env": object (optional, custom environment variables merged with platform env),
+  "image_auth": {
+    "username": string,
+    "password": string
+  } (optional, for pulling private container images),
   "upload_files": array (optional, override lambda files from registry),
   "download_files": array (optional, download files from sandbox to S3)
 }
@@ -36,7 +40,7 @@ Description:
      resource: WDL "resource" > lambda cpu_limit/memory_limit > default
   3. Fetch the lambda's source files from S3 using the stored file_manifest.
   4. Create an ephemeral first-party sandbox using the resolved image.
-     The enforcer validates the final image matches adopt-lambda-runtime*.
+     On-prem: only adopt-lambda-runtime is allowed. Cloud: any image is accepted.
   5. Upload registry files into /workspace/, then any WDL "upload_files" (overrides registry files).
   6. Write the "input" value as JSON to /workspace/_input.json (never passed as CLI args).
   7. Execute: python /workspace/{entry_point} /workspace/_input.json
