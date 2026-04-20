@@ -26,6 +26,54 @@ Key Features:
 - Auth credentials are resolved at runtime using connector_id and the executor-provided org_id
 - If store_id is not provided, finds or creates a store based on (connector_id, org_id, s3_bucket, s3_prefix)
 - Returns list of file paths, batch info, store_id, and sync statistics
+- When workstream_id is present in workflow_arguments, automatically scopes the S3 listing to the workstream's folder and filters out files belonging to other workstreams. Org-level files (without a workstream_id= segment in their key) are still included.
+
+⚠️ CRITICAL: Output Schema
+
+S3_READ returns a JSON **object** (not a flat array). The structure is:
+
+{
+  "files": [
+    {
+      "s3_key": "org_id=abc/documents/report.pdf",
+      "s3_url": "https://bucket.s3.amazonaws.com/...",
+      "size_bytes": 102400,
+      "last_modified": "2025-03-15T10:30:00Z",
+      "file_type": "pdf",
+      "doc_id": "d_abc123",
+      "batch_id": "b_xyz789",
+      "adopt_internal_source_id": ""
+    }
+  ],
+  "batches": [
+    {
+      "batch_id": "b_xyz789",
+      "file_count": 5,
+      "total_size_bytes": 512000
+    }
+  ],
+  "store_id": "store_456",
+  "total_files": 5,
+  "new_files": 3,
+  "batch_count": 1
+}
+
+Field reference for each file object (inside "files"):
+- s3_key: full S3 object key
+- s3_url: presigned or direct URL
+- size_bytes: file size in bytes
+- last_modified: ISO-8601 timestamp
+- file_type: file extension (e.g. "pdf")
+- doc_id: unique document ID assigned by the doc store
+- batch_id: batch this file belongs to
+- adopt_internal_source_id: internal source identifier (may be empty)
+
+When a downstream JQ_FILTER consumes S3_READ output, always access .files first:
+
+  ".files | map({s3_key: .s3_key, filename: (.s3_key | split(\"/\") | last), size_bytes: .size_bytes, last_modified: .last_modified})"
+
+NEVER use .key or .size — the correct field names are .s3_key and .size_bytes.
+Since .files | map(...) emits one result (a single array), use extract_all: false on the JQ_FILTER step.
 
 Examples:
 
@@ -68,3 +116,4 @@ Implementation Notes:
 - If the same file appears again (same key), it is added as a new document record
 - Batch records track file count, total size, and processing status
 - Errors during S3 listing or credential resolution are returned as error messages
+- workstream_id is resolved automatically from workflow_arguments at runtime — do NOT add it to the step definition. The WDL only needs to ensure workflow_arguments.workstream_id is provided when the pipeline is triggered.

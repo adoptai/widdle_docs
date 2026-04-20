@@ -25,7 +25,8 @@ Basic Structure:
     "username": string,
     "password": string
   } (optional, init only, for pulling private container images),
-  "command": string (required for exec)
+  "command": string (required for exec),
+  "new_sandbox": boolean (optional, init only; when true, tears down any existing session before creating a new one — defaults to reusing the current session)
 }
 
 upload_files entry structure:
@@ -53,8 +54,8 @@ Description:
 - The platform adopts a session model: init -> exec -> exec -> ... -> teardown all share the same
   container. The executor attaches to the running session across steps by step ID reference.
 - "command" supports {stepId} and {stepId.field} references to inject values from previous step
-  outputs. All resolved values are shell-escaped (via shlex.quote) before substitution to prevent
-  command injection.
+  outputs. Resolved values are substituted directly and are not shell-escaped automatically.
+  Apply appropriate quoting/escaping in the command when interpolating untrusted values.
 - upload_files: Deploy files into the container before exec. Each entry specifies a container "path"
   and either inline "content" (string) or a "url" to fetch. Cannot specify both. Can be used on
   init or exec steps.
