@@ -57,6 +57,7 @@ https://adoptai.github.io/widdle_docs/operations/REST_OPERATION_DESCRIPTION.md
 | FIRST_ELEMENT | `FIRST_ELEMENT_DESCRIPTION.md` | extracts the first element |
 | FLATTEN | `FLATTEN_OPERATION_DESCRIPTION.md` | denormalizes nested JSON arrays |
 | GROUP | `GROUP_BY_OPERATION_DESCRIPTION.md` | performs aggregation operations on grouped data |
+| GOOGLE_DRIVE_READ | `GOOGLE_DRIVE_READ_OPERATION_DESCRIPTION.md` | resolves Drive paths, downloads txt/csv/pdf, writes pipeline rows for EMBEDDER |
 | INTELLIGENT_FILTER | `INTELLIGENT_FILTER_OPERATION_DESCRIPTION.md` | uses AI-powered filtering to intelligently filter data based on natural langu... |
 | INTELLIGENT_OUTPUT | `INTELLIGENT_OUTPUT_OPERATION_DESCRIPTION.md` | uses a Large Language Model (LLM) to intelligently format data into user-faci... |
 | INTELLIGENT_OUTPUT_V2 | `INTELLIGENT_OUTPUT_V2_OPERATION_DESCRIPTION.md` | uses a Large Language Model (LLM) to intelligently format data into user-faci... |
@@ -85,6 +86,7 @@ https://adoptai.github.io/widdle_docs/operations/REST_OPERATION_DESCRIPTION.md
 | REST_LOOP | `REST_LOOP_OPERATION_DESCRIPTION.md` | executes multiple REST calls by iterating over a list of items with optional ... |
 | RUN_ACTION | `RUN_ACTION_OPERATION_DESCRIPTION.md` | executes a published action (ActionV2) as a sub-workflow within the pipeline |
 | S3_READ | `S3_READ_OPERATION_DESCRIPTION.md` | lists objects from an S3 folder, filters by file type and timestamp, batches ... |
+| SHAREPOINT_READ | `SHAREPOINT_READ_OPERATION_DESCRIPTION.md` | lists files from a SharePoint folder via Microsoft Graph, filters by file typ... |
 | SORT | `SORT_OPERATION_DESCRIPTION.md` | orders array elements based on specified fields |
 | STATEMENT | `STATEMENT_OPERATION_DESCRIPTION.md` | provides a human-readable description or title for the workflow action |
 | SUGGESTIONS | `SUGGESTIONS_OPERATION_DESCRIPTION.md` | The id is always "suggestions". |

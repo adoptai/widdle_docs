@@ -13,7 +13,7 @@ Basic Structure:
 Note: table_label is required for the output vector table (e.g. "documents_vec"). Do NOT include table_id in the WDL — it is never stored in steps. If table_label is omitted for an S3-source EMBEDDER, the system derives it automatically as {s3_read_label}_vec from the preceding S3_READ step. table_label must be unique across all S3_READ and EMBEDDER steps in the same WDL.
 
 Key Features:
-- Supports two input_source_type values: "table" (DB rows) and "s3" (PDF documents from S3)
+- Supports three input_source_type values: "table" (DB rows), "s3" (PDF documents from S3), and "sharepoint" (SharePoint documents)
 - For "table": reads rows from a source table and converts specified columns to embeddable text
 - Splits text into chunks using configurable chunk_size and chunk_overlap parameters
 - Generates embeddings using configurable provider (Titan, OpenAI, etc.)
@@ -125,7 +125,7 @@ doc store record.
 }
 
 Implementation Notes:
-- input_source_type: "table" or "s3"
+- input_source_type: "table", "s3", or "sharepoint"
 - For "table", input_source_info requires one of: table_id, table_label, or table_name
   - No previous step data or explicit DB read is needed; EMBEDDER reads directly from the specified table
   - table_label: resolved at runtime via registry.resolve_by_label scoped to the pipeline (preferred in pipeline WDLs)
@@ -133,7 +133,7 @@ Implementation Notes:
   - table_id: also accepted for backward compat but should not be used in new WDLs
 - content_columns is optional (defaults to all columns concatenated as "key: value" pairs)
 - config.embedding_type is required and must match the provider used for search
-- config.incremental defaults to false for table source (atomic table swap); for S3 source, incremental is always forced to true since only new documents (status 'queued_for_indexing') are embedded per run
+- config.incremental defaults to false for table source (atomic table swap); for S3 and SharePoint sources, incremental is always forced to true since only new documents (status 'queued_for_indexing') are embedded per run
 - Pipeline tables always have an id column used as row identifier in vector metadata
 - The output vector table is auto-registered in db_org_pipeline_table_registry at runtime using table_label. The physical name follows {source_table_name}_vec convention (e.g. pipeline_{pipeline_id}_{source_table_id}_vec); the registry entry maps table_label → this physical name
 - In test_mode, a _test suffix is appended to the resolved table name
@@ -145,3 +145,9 @@ Implementation Notes:
   - Updates db_org_doc_documents.status per-document: 'indexing' -> 'indexed' (with chunk_count, indexed_at) or 'error'
   - Vector metadata includes: source, s3_url, doc_id, filename, pipeline_id, chunk_index
   - S3_READ must run before EMBEDDER to populate db_org_doc_documents with pipeline_id
+- For "sharepoint", input_source_info accepts: connector_id (reference to SharePoint connector), pipeline_id, org_id (latter two injected from executor at runtime)
+  - Queries db_org_doc_documents WHERE pipeline_id=? AND file_type='pdf' AND status='queued_for_indexing'
+  - Downloads each document via SharePointGraphClient, parses with PyPDFLoader
+  - Updates db_org_doc_documents.status per-document: 'indexing' -> 'indexed' (with chunk_count, indexed_at) or 'error'
+  - Vector metadata includes: source, sharepoint_url, doc_id, filename, pipeline_id, chunk_index
+  - SHAREPOINT_READ must run before EMBEDDER to populate db_org_doc_documents with pipeline_id
