@@ -14,13 +14,13 @@ Basic Structure:
 Key Features:
 - Uses user query automatically for searching
 - Searches through organizational knowledge base and data sources
-- Supports filtering by specific data sources/table names
+- Supports scoping results to a specific document (by full filename or KB document title) via case-insensitive **exact match** on the vector metadata `source_label` or `title` field. File extensions are stripped from both the user-supplied value and the stored value before comparison, so `"Foo.pdf"` matches whether the indexed title is stored as `"Foo"` or `"Foo.pdf"`.
 - Returns markdown-formatted responses for better readability
 - Uses assist bot's vector search capabilities with score-based filtering
 - Includes chat history context for better responses
 
 Parameters:
-- data_sources: List of specific data source/table names to search in. If empty, searches all organizational data
+- data_sources: List of full identifiers (a specific BYO filename or a specific KB document title) to scope the search. **Exact match only** — substrings, topic names, or file extensions alone do NOT match. A result is kept only if any provided value, after lowercasing and extension stripping, equals the result's `source_label` or `title`. Examples that work for a file uploaded as `Test_Rallyup_Campaign_Setup_Reference2.pdf`: `["Test_Rallyup_Campaign_Setup_Reference2"]` or `["Test_Rallyup_Campaign_Setup_Reference2.pdf"]`. Examples that do NOT work: `["Rallyup"]` (substring), `["Campaign_Setup"]` (substring), `[".pdf"]` (extension only). If `data_sources` is empty or omitted, the search runs across all organizational data.
 - additional_instructions: Extra context for formatting the response
 - max_results: Maximum number of results to return (default: 5)
 - score_threshold_abs: Absolute score threshold for filtering results (default: 0.35)
@@ -36,11 +36,11 @@ Examples:
   "max_results": 5
 }
 
-2. Search Specific Data Sources:
+2. Search Specific Data Sources (full filenames):
 {
   "id": "lookupProjectData",
   "operation": "DATA_SOURCE_LOOKUP",
-  "data_sources": ["project_database", "task_management", "team_documents"],
+  "data_sources": ["RallyUp_Campaign_Setup_Reference", "iOS_18_All_New_Features_Sept_2024"],
   "max_results": 15
 }
 
@@ -48,7 +48,7 @@ Examples:
 {
   "id": "lookupPolicyInfo",
   "operation": "DATA_SOURCE_LOOKUP",
-  "data_sources": ["hr_policies", "compliance_docs"],
+  "data_sources": ["HR_Policy_Handbook_2026.pdf", "Compliance_Q1_Update"],
   "additional_instructions": "Summarize key policy changes and highlight any compliance requirements",
   "max_results": 8,
   "score_threshold_abs": 0.4,
