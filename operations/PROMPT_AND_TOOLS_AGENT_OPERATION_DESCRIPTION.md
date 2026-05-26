@@ -13,7 +13,8 @@ Basic Structure:
   "execution_timeout": number (optional, default: None),
   "max_iterations": number (optional, default: 15),
   "summarize_tool_context": boolean (optional, default: false),
-  "skip_from_research": boolean (optional, default: false)
+  "skip_from_research": boolean (optional, default: false),
+  "enable_form_tools": boolean (optional, default: false)
 }
 
 Key Features:
@@ -35,6 +36,7 @@ Parameters:
 - inputs: Optional list of keys from intermediate_results or workflow_arguments to resolve and append as additional context to the agent's query. Each key is resolved via jq from the workflow's intermediate results. When omitted, the agent uses only the user query from conversation context
 - summarize_tool_context: When true, conversation history from previous turns is summarized via a fast LLM (Haiku) at the start of each new turn instead of loading raw tool messages into context. Raw data is always preserved in the DB. Useful for multi-turn agents that hit context/timeout limits after 3-4 turns
 - skip_from_research: When true, prevents this agent's sub-action REST results from being forwarded into the parent workflow's deep research payload. Useful when an agent step gathers auxiliary data that should not be included in the final deep research analysis. Only relevant when the workflow runs in reasoning mode; has no effect otherwise. Defaults to false
+- enable_form_tools: When true, enables agent-orchestrated structured forms. After the agent invokes sub-action tools, if a tool returns a valid `form_request` JSON spec (from a `STATIC_FORM` or `PAYLOAD` sub-action) and the agent status is `SUCCESS` or `CONTINUE`, the workflow pauses with `REQUESTING_USER_INPUT` and renders the form in chat via the existing FormRenderer. If the agent status is `FAILURE`, the form branch is skipped. On submit, the same agent step re-invokes with collected form values injected into context. Opt-in only; absent or false preserves existing text/CONTINUE behavior. Defaults to false
 
 Model Options:
 - GPT models: "gpt-5", "gpt-4", "gpt-4-turbo"
@@ -110,6 +112,7 @@ Implementation Notes:
 - PREFERRED: Use simple_prompt_id to reference prompts stored in the prompt vault for better prompt management and versioning
 - LEGACY: system_prompt is still supported for backwards compatibility but should be migrated to simple_prompt_id
 - The agent automatically uses the user query from the conversation context. When `inputs` is specified, the resolved data is appended as "Additional context" to the query
+- Sub-action tools created from `action_ids` receive the parent's `conversation_history`, `user_query`, and `complete_user_query` so `PAYLOAD` steps inside form-spec sub-actions have LLM context (required for dynamic `form_request` generation)
 - Security params, base URLs, and config instance are automatically provided from the workflow context
 - The agent can make multiple tool calls in sequence to complete complex tasks
 - Tool execution results are automatically formatted and presented to the agent

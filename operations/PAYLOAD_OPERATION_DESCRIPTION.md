@@ -92,5 +92,6 @@ Implementation Notes:
 - When validation fails, the LLM is prompted again with the specific validation errors to self-correct
 - After max_retries attempts, the operation returns an error if the output still doesn't conform to the schema
 - Instructions are limited to 200 words maximum for performance reasons
-- The output of this operation is always the validated JSON object, ready for use by subsequent steps
+- Step output is stored in `intermediate_results[step_id]` as a validated **dict** (JSON object), ready for downstream jq / `{stepId.field}` references within the same action
+- When the sub-action runs as an agent tool, that dict is serialized to a JSON string for LangChain tool output (same as `STATIC_FORM`)
 - Use this operation when you need guaranteed schema conformance; use PROMPT for free-form text/table generation
