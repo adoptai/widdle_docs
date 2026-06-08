@@ -21,7 +21,8 @@ Basic Structure:
   "type_hint": object (optional, default: {}),
   "canonical_api_endpoint": string (optional),
   "retry_with_payload_step": string (optional),
-  "max_payload_retries": integer (optional, default: 3)
+  "max_payload_retries": integer (optional, default: 3),
+  "capture_response_headers": boolean (optional, default: false)
 }
 
 Description:
@@ -40,6 +41,7 @@ Description:
   custom certificate verification
 - `retry_with_payload_step` links this REST step to a previous payload generation step (PAYLOAD, TEXT_TO_SQL, or TXT_TO_SOQL_QUERY). On API failure, the executor re-invokes that generation step with error context so the LLM can self-correct, then retries the REST call with the regenerated payload.
 - `max_payload_retries` sets the maximum number of payload-regeneration-and-retry cycles (default: 3). Only used when `retry_with_payload_step` is set.
+- `capture_response_headers` when set to `true`, stores the HTTP response headers in `intermediate_results` at `{step_id}__response_headers` with all keys lowercased. Use this when subsequent steps need to reference a response header (e.g. `{step_id__response_headers.mcp-session-id}`). Disabled by default to avoid unnecessary data in intermediate results.
 
 Examples:
 1. Simple GET request:
@@ -128,7 +130,25 @@ concatenated into an array.
   "max_payload_retries": 3
 }
 
-8. REST call with SOQL retry (paired with a TXT_TO_SOQL_QUERY step):
+8. MCP session initialization — capture response headers to pass session ID to subsequent steps:
+{
+  "id": "initialize",
+  "operation": "REST",
+  "url": "https://example.com/mcp",
+  "method": "POST",
+  "capture_response_headers": true,
+  "payload": { "jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {} }
+}
+{
+  "id": "list_tools",
+  "operation": "REST",
+  "url": "https://example.com/mcp",
+  "method": "POST",
+  "additional_headers": { "Mcp-Session-Id": "{initialize__response_headers.mcp-session-id}" },
+  "payload": { "jsonrpc": "2.0", "id": 2, "method": "tools/list" }
+}
+
+9. REST call with SOQL retry (paired with a TXT_TO_SOQL_QUERY step):
 {
   "id": "gen_soql",
   "operation": "TXT_TO_SOQL_QUERY",
