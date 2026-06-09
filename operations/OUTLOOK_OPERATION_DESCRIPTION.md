@@ -21,7 +21,11 @@ Basic Structure:
   "page_size": integer,
   "max_pages": integer,
   "select_fields": list[string],
-  "fields": list[string]
+  "fields": list[string],
+  "download_attachments": boolean,
+  "s3_connector_id": string | null,          // only required when download_attachments=true
+  "max_attachment_size_bytes": integer,       // default -1; only when download_attachments=true; -1 = unlimited
+  "allowed_extensions": list[string] | null   // only applicable when download_attachments=true; null = accept all
 }
 
 Supported fetch_mode values:
@@ -62,6 +66,29 @@ The OUTLOOK step returns an object with the following fields:
 - `latest_existing_received_datetime`: string | null — Latest `received_datetime` found in the target table before fetch (used by ONLY_NEW sync).
 - `write_requested`: boolean — Whether `write=true` was set.
 - `rows_written`: integer — Number of rows written to the target table.
+- `total_attachments_downloaded`: integer — Count of attachments successfully downloaded from Graph and uploaded to S3 (0 unless `download_attachments=true`).
+- `total_attachment_errors`: integer — Count of attachments that failed to download or upload.
+- `uploaded_attachment_paths`: list[string] — Relative S3 paths (relative to the S3 connector's `BucketURI` prefix) of successfully uploaded attachments. Wire this into a downstream `PARSE_DOCUMENT` step's `file_path` for incremental parsing.
+- `uploaded_attachment_download_urls`: list[string] — Presigned HTTPS download URLs (TTL: 6 hours) for successfully uploaded attachments. Wire this into sandbox/custom-extractor manifests that consume `url`.
+- `uploaded_attachment_manifest`: list[dict] — Per-attachment records with `mail_id`, `attachment_id`, `filename`, `relative_path`, `download_url`. Primary field for mail→file mapping in downstream pipelines.
+- `total_bytes_uploaded`: integer — Total bytes uploaded to S3 across all attachments.
+- `upload_duration_seconds`: number — Cumulative wall-clock time spent on S3 PUTs for attachments.
+- `skipped_by_size_filter`: integer — Attachments skipped because they exceeded `max_attachment_size_bytes`.
+- `skipped_by_extension_filter`: integer — Attachments skipped because their extension was not in `allowed_extensions`.
+- Each email object may also include `attachment_count` (integer) and `attachment_filenames` (list[string]) when `download_attachments=true`.
+
+Attachment Download (v1):
+- Enable by setting `download_attachments=true` and providing `s3_connector_id` (the connector that holds the AWS credentials and `BucketURI`). Both are required together; validation fails otherwise.
+- Storage layout: `s3://<bucket>/<BucketURI-prefix>/pipeline_{pipeline_id}/attachments/dt={YYYY-MM-DD}/mail_{mail_short}/{att_short}_{filename}`. The prefix comes from the S3 connector's `BucketURI`; we never hardcode `org_{org_id}` into the key. `mail_short` and `att_short` are 10-char SHA-1 hex digests of the raw Graph mail/attachment ids — short and stable, so the same email always lands in the same partition.
+- Filename is sanitized (non-alphanumeric chars become `_`) so Graph-issued attachment names produce valid S3 keys; raw mail/attachment ids are hashed (not sanitized inline) for readability.
+- For downstream consumers that need an explicit mail→file mapping without parsing the path, use the `uploaded_attachment_manifest` output: a list of `{mail_id, attachment_id, filename, relative_path, download_url}`.
+- Filters:
+  - `max_attachment_size_bytes` (default `-1`, unlimited): attachments with `size` > this value are skipped and counted in `skipped_by_size_filter`.
+  - `allowed_extensions` (default `null`, accept all): case-insensitive, leading dot optional, e.g. `["pdf", "xlsx", "docx"]`. Non-matching files are counted in `skipped_by_extension_filter`.
+- v1 supports Graph file attachments (`microsoft.graph.fileAttachment`) only. Item attachments (forwarded emails, calendar items) and reference attachments (OneDrive links) are skipped.
+- S3 upload retries 429/503/504 responses with exponential backoff (1s, 2s, 4s, capped at 30s). Permanent failures increment `total_attachment_errors` and the email continues processing.
+- Use `uploaded_attachment_paths` with `PARSE_DOCUMENT` (relative path expected) and `uploaded_attachment_download_urls` with sandbox / custom extractors (full presigned HTTPS URLs, valid for 6 hours).
+- For hourly pipelines that must avoid re-emitting old attachments, combine `download_attachments=true` with `sync_mode=ONLY_NEW`, a resolved `table_id`/`table_label`, and `write=true` so the mail-level watermark advances each run.
 
 Example Output:
 {
