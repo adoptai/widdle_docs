@@ -7,7 +7,7 @@ Basic Structure:
   "input": string (step ID whose output is the payload: list[str] | list[dict] | dict),
   "target_lang": string (IETF BCP 47 language tag — e.g. "es", "fr", "zh-CN"; default "es"),
   "source_lang": string (IETF BCP 47 language tag; default "en"),
-  "preferred_llm": string (optional LLMName value, default "openai/gpt-oss-20b"),
+  "preferred_llm": string (optional LLMName value, default "claude-haiku-4-5"),
   "translatable_keys": list[string] (optional — overrides default translatable keys; applies to dict / list[dict] inputs only),
   "skip_keys": list[string] (optional — overrides default skipped keys; applies to dict / list[dict] inputs only),
   "context_skip": object (optional — overrides default context-aware skip rules; shape: {"<parent_key>": ["<child_key>", ...]})
@@ -26,11 +26,11 @@ Input shapes:
 - dict       -> dict        Single form dict (legacy path).
 
 Translation Engine:
-Default model is LLMName.GROQ_GPT_OSS_20B (Groq's openai-gpt-oss-20b, ~900 tok/s on Groq LPU — benchmarked as the best latency/quality trade-off for Centuri form payloads). Routes through ConfigInstance.create_llm so the same env vars the rest of ProjectA3 uses drive the underlying LLM — no translate-specific env vars. Sends all strings for a given step in a single LLM call as a JSON translation task. Handles thinking blocks, markdown code fences, and whitespace-wrapped JSON. On parse failure or API error, the step returns an error rather than silently returning untranslated text.
+Default model is LLMName.CLAUDE_4_5_HAIKU (claude-haiku-4-5 — fast, low-latency light model suitable for Centuri form payloads). Routes through ConfigInstance.create_llm so the same env vars the rest of ProjectA3 uses drive the underlying LLM — no translate-specific env vars. Sends all strings for a given step in a single LLM call as a JSON translation task. Handles thinking blocks, markdown code fences, and whitespace-wrapped JSON. On parse failure or API error, the step returns an error rather than silently returning untranslated text.
 
 Environment variables (inherited from the standard ProjectA3 LLM routing):
 - Gateway path (production):  LLM_GATEWAY_ENABLED=true, LLM_GATEWAY_API_KEY, LLM_GATEWAY_URL
-- Direct Groq path (non-gateway): GROQ_API_KEY
+- Direct Anthropic path (non-gateway): ANTHROPIC_KEY
 
 If no usable credentials are configured at the settings layer, ConfigInstance.create_llm raises and the step fails. There is no automatic fallback; a single-engine architecture keeps the operation simple and caching (if needed) is handled at the frontend layer.
 
@@ -65,7 +65,7 @@ Parameters:
 - input (required): Step ID whose output is the payload (list[str] | list[dict] | dict).
 - target_lang (optional, default "es"): IETF BCP 47 language tag (e.g. "es", "fr", "de", "zh-CN", "pt-BR").
 - source_lang (optional, default "en"): IETF BCP 47 language tag.
-- preferred_llm (optional, default "openai/gpt-oss-20b"): LLMName value-string to override the model. Must resolve to a valid LLMName enum entry (e.g. "openai/gpt-oss-120b"); invalid values fall back to the default with a warning.
+- preferred_llm (optional, default "claude-haiku-4-5"): LLMName value-string to override the model. Must resolve to a valid LLMName enum entry (e.g. "claude-sonnet-4-5"); invalid values fall back to the default with a warning.
 - translatable_keys (optional): list of key names whose string values should be translated. Overrides the Centuri-tuned default set. Applies to dict and list[dict] inputs only.
 - skip_keys (optional): list of key names whose subtrees should be skipped entirely during extraction (machine codes, metadata, system fields). Overrides the Centuri-tuned default set. Applies to dict and list[dict] inputs only.
 - context_skip (optional): object mapping a parent key to a list of child keys that should not be translated inside that parent. Example: {"answers": ["text", "url"]}. Overrides the Centuri-tuned default. Applies to dict and list[dict] inputs only.

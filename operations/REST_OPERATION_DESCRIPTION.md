@@ -22,7 +22,11 @@ Basic Structure:
   "canonical_api_endpoint": string (optional),
   "retry_with_payload_step": string (optional),
   "max_payload_retries": integer (optional, default: 3),
-  "capture_response_headers": boolean (optional, default: false)
+  "capture_response_headers": boolean (optional, default: false),
+  "via": string (optional),
+  "tabby_profile_id": string (optional),
+  "client_id": string (optional),
+  "client_secret": string (optional)
 }
 
 Description:
@@ -42,6 +46,22 @@ Description:
 - `retry_with_payload_step` links this REST step to a previous payload generation step (PAYLOAD, TEXT_TO_SQL, or TXT_TO_SOQL_QUERY). On API failure, the executor re-invokes that generation step with error context so the LLM can self-correct, then retries the REST call with the regenerated payload.
 - `max_payload_retries` sets the maximum number of payload-regeneration-and-retry cycles (default: 3). Only used when `retry_with_payload_step` is set.
 - `capture_response_headers` when set to `true`, stores the HTTP response headers in `intermediate_results` at `{step_id}__response_headers` with all keys lowercased. Use this when subsequent steps need to reference a response header (e.g. `{step_id__response_headers.mcp-session-id}`). Disabled by default to avoid unnecessary data in intermediate results.
+- `via` routes the request through Tabby's authenticated browser session instead of a direct
+  server-side HTTP call. Set `via: "tabby"` to bypass anti-bot / TLS-fingerprinting protection
+  (Akamai, Cloudflare, PerimeterX): the request runs inside the live browser via Tabby's
+  `/execute/fetch`, inheriting its TLS fingerprint and cookie jar. The response flows through the
+  same normalization as a normal REST call; a binary response (e.g. application/pdf) is decoded and
+  returned as a download reference. When `via` is absent the call executes server-side as before.
+- `tabby_profile_id` (required when `via: "tabby"`) selects the Tabby profile / browser session to
+  execute the request through.
+  Tabby authentication is supplied by the platform at execution time: a per-user bearer token
+  (obtained via the platform token-exchange) and the Tabby endpoint URL are passed into the
+  executor and used automatically — you do not (and cannot) set them on the step. The Tabby
+  endpoint is taken only from trusted sources (the platform-pushed auth or the `TABBY_API_URL`
+  environment variable), never from the WDL, so an action cannot redirect the request or the
+  bearer to another host. `client_id` / `client_secret` / `TABBY_CLIENT_ID` /
+  `TABBY_CLIENT_SECRET` are only a self-host / local fallback used when no platform bearer is
+  present.
 
 Examples:
 1. Simple GET request:
