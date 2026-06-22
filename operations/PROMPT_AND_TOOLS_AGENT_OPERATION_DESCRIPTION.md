@@ -6,7 +6,7 @@ Basic Structure:
   "operation": "PROMPT_AND_TOOLS_AGENT",
   "simple_prompt_id": string (preferred, fetches prompt from prompt vault),
   "system_prompt": string (deprecated, use simple_prompt_id instead),
-  "model_string": string (optional, default: "claude-4-0-sonnet"),
+  "model_string": string (optional, default: "claude-4-6-sonnet"),
   "action_ids": list[string],
   "output_format": string (optional, one of: "message_only", "full_response", default: "message_only"),
   "inputs": list[string] (optional, keys from intermediate_results or workflow_arguments to include as additional context),
@@ -40,7 +40,7 @@ Parameters:
 
 Model Options:
 - GPT models: "gpt-5", "gpt-4", "gpt-4-turbo"
-- Claude models: "claude-4-5-sonnet", "claude-3-sonnet"
+- Claude models: "claude-4-5-sonnet", "claude-4-6-sonnet"
 - Gemini models: "gemini-pro", "gemini-2.5-flash"
 - Groq models: "groq/llama3-8b", "groq/mixtral-8x7b"
 

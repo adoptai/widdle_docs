@@ -39,7 +39,7 @@ Query Engine Options:
 
 LLM Model Options:
 - GPT models: "openai-new/gpt-5", "openai-new/gpt-4", "openai-new/gpt-4-turbo"
-- Claude models: "anthropic/claude-4-5-sonnet", "anthropic/claude-3-sonnet"
+- Claude models: "claude-sonnet-4-5", "claude-sonnet-4-6"
 - Google models: "google/gemini-pro", "google/gemini-2.5-flash"
 - Groq models: "groq/llama3-8b", "groq/mixtral-8x7b"
 
@@ -72,7 +72,7 @@ Examples:
   "table_name": "transactions",
   "description": "Sales transactions table with transaction_id, amount, date, and product_category",
   "schema": "transaction_id: string, amount: decimal, date: date, product_category: string, customer_id: string",
-  "preferred_llm": "anthropic/claude-4-5-sonnet"
+  "preferred_llm": "claude-sonnet-4-5"
 }
 
 3. Complex Analysis Query: Find the average latency and error rate for each model, but only include models with more than 100 requests
