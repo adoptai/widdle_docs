@@ -11,7 +11,7 @@ Basic Structure:
   "sample_data": string (optional),
   "example_outputs": string (optional),
   "query_engine": string (optional, default: "apache_datafusion"),
-  "preferred_llm": string (optional, default: "openai-new/gpt-5")
+  "preferred_llm": string (optional, default: "gpt-5")
 }
 
 Key Features:
@@ -32,16 +32,15 @@ Parameters:
 - sample_data: A sample data record from the table (required)
 - example_outputs: Example outputs from the SQL query (optional)
 - query_engine: The SQL query engine to use (optional, default: "apache_datafusion")
-- preferred_llm: The LLM model to use for SQL generation (optional, default: "openai-new/gpt-5")
+- preferred_llm: The LLM model to use for SQL generation (optional, default: "gpt-5")
 
 Query Engine Options:
 - "apache_datafusion": Apache DataFusion query engine (default)
 
 LLM Model Options:
-- GPT models: "openai-new/gpt-5", "openai-new/gpt-4", "openai-new/gpt-4-turbo"
+- GPT models: "gpt-5", "gpt-4o"
 - Claude models: "claude-sonnet-4-5", "claude-sonnet-4-6"
-- Google models: "google/gemini-pro", "google/gemini-2.5-flash"
-- Groq models: "groq/llama3-8b", "groq/mixtral-8x7b"
+- Google models:  "gemini-2.5-flash"
 
 Output:
 The operation returns a JSON object with a "query" field containing the generated SQL query:
@@ -61,7 +60,7 @@ Examples:
   "schema": "user_id: string, session_count: integer, last_active_date: date, region: string",
   "sample_data": "user_id: '1234567890', session_count: 10, last_active_date: '2024-01-01', region: 'US'",
   "query_engine": "apache_datafusion",
-  "preferred_llm": "openai-new/gpt-5"
+  "preferred_llm": "gpt-5"
 }
 
 2. Aggregation Query: Calculate the total sales amount per product category for the last 30 days

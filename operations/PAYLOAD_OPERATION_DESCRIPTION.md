@@ -26,7 +26,7 @@ Parameters:
 - input: ID of a previous workflow step whose output provides context (optional)
 - inputs: List of IDs from previous workflow steps whose outputs provide context (optional)
 - max_retries: Maximum number of retry attempts if schema validation fails (optional, default: 2)
-- preferred_llm: LLM model to use for generation (optional, default: uses config heavy_llm). Options include: "claude-haiku-4-5", "claude-sonnet-4-5", "openai-new/gpt-5", etc.
+- preferred_llm: LLM model to use for generation (optional, default: uses config heavy_llm). Options include: "claude-haiku-4-5", "claude-sonnet-4-5", "gpt-5", etc.
 
 Examples:
 
