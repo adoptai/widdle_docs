@@ -197,6 +197,7 @@ Rules for this pattern:
 - `table_name`, if given, must be a lowercase identifier matching `^[a-z][a-z0-9_]{0,62}$`.
 - If `table_name` is given and the table does not exist, the pipeline fails hard — do not silently fall back.
 - Do NOT set both `table_name` and `table_label` in the same step; they are mutually exclusive across destinations.
+- **`mode: "append"` to a `source_id`-capable table requires a key.** If the target table has a `source_id` column and **no** row carries a `source_id`, the append is **refused** — an append with no key silently duplicates rows on retry. Set `adopt_internal_source_id` from the row's natural key (e.g. `employee_id`) — that populated `source_id` is what makes the write idempotent. `mode: "upsert"` deduplicates via `ON CONFLICT (source_id)`, so it requires the same populated key: an unkeyed upsert still duplicates on retry (Postgres treats NULLs as distinct). Only `replace`, and tables without a `source_id` column, are unaffected.
 
 ---
 
