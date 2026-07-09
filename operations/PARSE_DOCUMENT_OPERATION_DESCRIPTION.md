@@ -34,7 +34,10 @@ File Path Rules (S3 / SharePoint only — not Google Drive):
   Example (S3): if BucketURI = "s3://my-bucket/org_data/docs/" and the file is at s3://my-bucket/org_data/docs/report.pdf, then file_path = "report.pdf" (NOT "org_data/docs/report.pdf").
 - When the user does NOT specify a particular file name, use file_path = "*" to process ALL supported files in the connector's path. This is the most common pattern for pipelines wired to an S3 or SharePoint source. **Do not apply this mental model to `source_type` `google_drive`**—see the Google Drive section above.
 - Glob patterns are supported: "*.pdf" (all PDFs), "reports/*.csv" (CSVs in reports/ subfolder).
-- Template variables are supported: "{{previousStep.relative_path}}" resolves at runtime.
+- **Template variables in `file_path`** are resolved at runtime using the platform-**canonical single-brace** form `{stepId.field}` / `{workflow_arguments.x}` — the same engine as SANDBOX `command`, REST url/payload, and JQ. The legacy double-brace `{{stepId.field}}` form is still accepted for back-compat, but prefer single-brace for consistency with the rest of the WDL.
+  - This lets a **bucket-rooted connector** template the per-run workstream prefix into the path — e.g. `file_path = "org_id=<org>/workstream_id={workflow_arguments.workstream_id}/source/_compute/records/uhy_runs.json"`.
+  - **Platform-provided run vars** (always in `workflow_arguments`): `workstream_id`, `run_id`, `pipeline_run_id`, `conversation_id`. `org_id` and `source_path` are **NOT** auto-provided — hardcode those segments (as above) or have the pipeline pass them in its workflow arguments.
+  - Resolution is **per-token, best-effort**: a resolvable token is substituted; an **unresolvable one is left literal** so it surfaces as the exact `{…}` token in the failed-download error (mis-templates fail loudly, never as a silently-empty path segment). The same resolver is used by S3_READ / SHAREPOINT_READ / GOOGLE_DRIVE_READ path fields.
 
 Output (single file — file_path is a concrete path, or google_drive returned one file):
 {
