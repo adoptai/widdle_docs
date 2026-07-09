@@ -69,10 +69,16 @@ Description:
   - execution_id: unique identifier for this execution
   - exit_code: exit code of the lambda process
   - duration_ms: wall-clock execution time in milliseconds
-  - output: parsed JSON output from the lambda's stdout (last token), or raw string on parse failure
+  - output: parsed JSON output, or raw string on parse failure
+  - stdout: full, byte-exact standard output; `output` is parsed from it — full-string JSON first, then the last line (the old last-token split that corrupted JSON containing spaces is gone)
+  - stderr: captured standard error from the lambda process
+  - stdout_truncated: boolean; true means `output`/`stdout` are INCOMPLETE — do NOT trust them
+  - sandbox_id: identifier of the ephemeral sandbox the lambda ran in
+  - image: the resolved runtime image used for the execution
   - downloaded_files: list of presigned S3 URLs if download_files were requested
   - lambda_name: the lambda_name from the step (if provided)
   - lambda_id: the lambda_id from the step (if provided)
+- Large output: return a small JSON status contract on stdout, not multi-MB data (it can truncate under load, surfacing as `stdout_truncated: true`). For bulk data, write it to a file/S3 and read it back with `PARSE_DOCUMENT(source_type:"s3") -> JQ_FILTER -> WRITE_TO_DB`.
 
 When to use EXECUTE_LAMBDA vs SANDBOX:
 - Use EXECUTE_LAMBDA when:

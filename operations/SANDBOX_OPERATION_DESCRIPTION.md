@@ -79,9 +79,14 @@ Description:
 - Step output fields:
   - sandbox_id: identifier of the running container
   - exit_code: exit code of the executed command
-  - stdout: captured standard output from the command
+  - stdout: captured standard output, reconstructed byte-exact from the SDK log chunks
+  - stderr: captured standard error from the command
+  - stdout_truncated: boolean; true when the SDK reported the stream was truncated — treat stdout as INCOMPLETE and do NOT parse it as authoritative
+  - duration_ms: wall-clock execution time of the command in milliseconds
+  - execution_id: identifier of this exec invocation
   - downloaded_files: list of presigned S3 URLs for downloaded files
   - endpoints: map of port number to proxied URL
+- Large output: do NOT return multi-MB blobs or full CSV/JSON dumps via stdout. Even though stdout is byte-exact, it can still truncate under load (`stdout_truncated: true` plus a WARN). Keep stdout to a small status contract (e.g. `{"ok": true, "rows": 1234, "s3_url": "s3://..."}`) and write the real payload to a file, then `download_files` it (or write it to S3) and read it back with `PARSE_DOCUMENT(source_type:"s3") -> JQ_FILTER(.text|fromjson|...) -> WRITE_TO_DB`.
 
 Examples:
 1. Simple sandbox: init, run a script, teardown:
