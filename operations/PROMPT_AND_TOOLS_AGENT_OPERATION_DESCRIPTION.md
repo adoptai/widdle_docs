@@ -41,7 +41,7 @@ Parameters:
 Model Options:
 - GPT models: "gpt-5", "gpt-4", "gpt-4-turbo"
 - Claude models: "claude-4-5-sonnet", "claude-4-6-sonnet"
-- Gemini models: "gemini-pro", "gemini-2.5-flash"
+- Gemini models: "gemini-pro", "gemini-3.6-flash"
 - Groq models: "groq/llama3-8b", "groq/mixtral-8x7b"
 
 Examples:

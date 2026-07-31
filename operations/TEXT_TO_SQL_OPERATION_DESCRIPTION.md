@@ -40,7 +40,7 @@ Query Engine Options:
 LLM Model Options:
 - GPT models: "gpt-5", "gpt-4o"
 - Claude models: "claude-sonnet-4-5", "claude-sonnet-4-6"
-- Google models:  "gemini-2.5-flash"
+- Google models:  "gemini-3.6-flash"
 
 Output:
 The operation returns a JSON object with a "query" field containing the generated SQL query:
