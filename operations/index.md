@@ -33,6 +33,7 @@ https://adoptai.github.io/widdle_docs/operations/REST_OPERATION_DESCRIPTION.md
 | ARITHMETIC | `ARITHMETIC_OPERATION_DESCRIPTION.md` | evaluates mathematical expressions using placeholder substitution from previo... |
 | ASK_USER_FOR_INPUT | `ASK_USER_FOR_INPUT_OPERATION_DESCRIPTION.md` | pauses the workflow to collect necessary information from the end-user by gen... |
 | BYO_SYSTEM_PROMPT | `BYO_SYSTEM_PROMPT_OPERATION_DESCRIPTION.md` | enables custom LLM interactions with a user-defined system prompt and model c... |
+| COMPUTER_USE | `COMPUTER_USE_OPERATION_DESCRIPTION.md` | hands a goal to the Adopt extension's agent, which completes it in the user's... |
 | CONDITION | `CONDITION_OPERATION_DESCRIPTION.md` | evaluates conditions and determines the next step based on the result |
 | CONDITIONAL_ASSIGNMENT | `CONDITIONAL_ASSIGNMENT_OPERATION_DESCRIPTION.md` | selects between two previous operation results based on condition evaluation |
 | CONVERSATIONAL_INPUT | `CONVERSATIONAL_INPUT_OPERATION_DESCRIPTION.md` | opens up an interactive conversation with the user to gather specific informa... |
